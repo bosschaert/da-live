@@ -90,6 +90,16 @@ function setAEMDocInEditor(aemDoc, yXmlFragment, schema) {
   prosemirrorToYXmlFragment(fin, yXmlFragment);
 }
 
+function getConnectionStatusDiv() {
+  const statusDiv = document.createElement('div');
+  statusDiv.style.color = 'green';
+  statusDiv.style['align-self'] = 'center';
+  statusDiv.innerText = 'Unknown';
+  const container = window.document.querySelector('da-title').shadowRoot.children[0]
+  container.insertBefore(statusDiv, container.children[1]);
+  return statusDiv;
+}
+
 export default function initProse({ editor, path }) {
   const schema = getSchema();
 
@@ -105,6 +115,16 @@ export default function initProse({ editor, path }) {
   }
 
   const wsProvider = new WebsocketProvider(server, roomName, ydoc, opts);
+
+  const statusDiv = getConnectionStatusDiv();
+  wsProvider.on('status', (st) => {
+    const proseEl = window.view.root.querySelector('.ProseMirror');
+    const connected = st.status === 'connected';
+    proseEl.setAttribute('contenteditable', connected);
+    proseEl.style['background-color'] = connected ? null : 'lightgrey';
+
+    statusDiv.innerText = st.status;
+  });
 
   const yXmlFragment = ydoc.getXmlFragment('prosemirror');
 
@@ -137,8 +157,10 @@ export default function initProse({ editor, path }) {
           return;
         }
 
-        ydoc.getMap('aem').delete(serverInvKey);
-        setAEMDocInEditor(svrUpdate, yXmlFragment, schema);
+        const aemMap = ydoc.getMap('aem');
+        aemMap.delete(serverInvKey);
+        aemMap.set('content', upd);
+        setAEMDocInEditor(upd, yXmlFragment, schema);
       }, timeout);
     }
 
