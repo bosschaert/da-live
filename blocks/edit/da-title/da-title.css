@@ -120,3 +120,36 @@ h1 {
     bottom: 22px;
   }
 }
+
+/* ----------- */
+
+div.collab-awareness {
+  flex: 1;
+  display: flex;
+  align-self: center;
+  justify-content: flex-end;
+  padding-right: 16px;
+}
+
+div.collab-other-users {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+div.collab-other-users div {
+  display: flex;
+  color: grey;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+img.collab-icon {
+  padding-right: 4px;
+  /* Change the SVG color ro 1473E6 */
+  filter: invert(35%) sepia(96%) saturate(4714%) hue-rotate(204deg) brightness(100%) contrast(84%);
+}
+
+div.collab-users {
+  display: flex;
+  flex-direction: row-reverse;
+}

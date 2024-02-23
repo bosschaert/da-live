@@ -90,11 +90,14 @@ function setAEMDocInEditor(aemDoc, yXmlFragment, schema) {
   prosemirrorToYXmlFragment(fin, yXmlFragment);
 }
 
-function getConnectionStatusDiv() {
+function getAwarenessStatusDiv() {
   const statusDiv = document.createElement('div');
-  statusDiv.style.color = 'green';
-  statusDiv.style['align-self'] = 'center';
-  statusDiv.innerText = 'Unknown';
+  statusDiv.classList = 'collab-awareness';
+  statusDiv.innerHTML = `<div class="collab-other-users">
+    <div><img class="collab-connection collab-icon"></div>
+    <div class="collab-users"></div>
+  </div>`;
+
   const container = window.document.querySelector('da-title').shadowRoot.children[0]
   container.insertBefore(statusDiv, container.children[1]);
   return statusDiv;
@@ -116,14 +119,44 @@ export default function initProse({ editor, path }) {
 
   const wsProvider = new WebsocketProvider(server, roomName, ydoc, opts);
 
-  const statusDiv = getConnectionStatusDiv();
+  const users = new Set();
+  const statusDiv = getAwarenessStatusDiv();
+  const usersDiv = statusDiv.querySelector('div.collab-users');
+  wsProvider.awareness.on('update', (delta) => {
+    for (const u of delta.added) {
+      users.add(u);
+    }
+    for (const u of delta.removed) {
+      users.delete(u);
+    }
+
+    let html = '';
+    for (const u of Array.from(users).sort()) {
+      html = html.concat(`<div><img src="/blocks/edit/prose/img/Smock_RealTimeCustomerProfile_18_N.svg" alt="Other active user" class="collab-icon" alt="${u}" title="${u}"/></div>`);
+    }
+    usersDiv.innerHTML = html;
+  });
+
+  const connectionImg = statusDiv.querySelector('img.collab-connection')
   wsProvider.on('status', (st) => {
     const proseEl = window.view.root.querySelector('.ProseMirror');
     const connected = st.status === 'connected';
     proseEl.setAttribute('contenteditable', connected);
     proseEl.style['background-color'] = connected ? null : 'lightgrey';
 
-    statusDiv.innerText = st.status;
+    switch (st.status) {
+      case 'connected':
+        connectionImg.src = '/blocks/edit/prose/img/Smock_Cloud_18_N.svg';
+        break;
+      case 'connecting':
+        connectionImg.src = '/blocks/edit/prose/img/Smock_CloudDisconnected_18_N.svg';
+        break;
+      default:
+        connectionImg.src = '/blocks/edit/prose/img/Smock_CloudError_18_N.svg';
+        break;
+    }
+    connectionImg.alt = st.status;
+    connectionImg.title = st.status;
   });
 
   const yXmlFragment = ydoc.getXmlFragment('prosemirror');
