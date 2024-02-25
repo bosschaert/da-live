@@ -131,8 +131,15 @@ export default function initProse({ editor, path }) {
     }
 
     let html = '';
+    /* */ html = html.concat('<div class="collab-initial"><p>A</p></div>');
     for (const u of Array.from(users).sort()) {
-      html = html.concat(`<div><img src="/blocks/edit/prose/img/Smock_RealTimeCustomerProfile_18_N.svg" alt="Other active user" class="collab-icon" alt="${u}" title="${u}"/></div>`);
+      if (/[a-zA-Z]/.test(u)) {
+        // Contains letters so must be a user name
+        const initial = u.toString().substring(0, 1);
+        html = html.concat(`<div class="collab-initial" title="${u}"><p>${initial}</p></div>`);
+      } else {
+        html = html.concat(`<div class="collab-icon"><img src="/blocks/edit/prose/img/Smock_RealTimeCustomerProfile_18_N.svg" alt="Other active user" class="collab-icon" alt="${u}" title="${u}"/></div>`);
+      }
     }
     usersDiv.innerHTML = html;
   });

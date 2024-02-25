@@ -138,18 +138,40 @@ div.collab-other-users {
 
 div.collab-other-users div {
   display: flex;
-  color: grey;
-  font-size: 14px;
-  font-weight: 400;
 }
 
 img.collab-icon {
-  padding-right: 4px;
-  /* Change the SVG color ro 1473E6 */
+  /* Trick to change the SVG color ro 1473E6
   filter: invert(35%) sepia(96%) saturate(4714%) hue-rotate(204deg) brightness(100%) contrast(84%);
+  this is now done in the svg file itself */
+  width: 19px;
+  height: 19px;
 }
+
 
 div.collab-users {
   display: flex;
   flex-direction: row-reverse;
 }
+
+div.collab-initial {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5px;
+}
+
+div.collab-initial p {
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
