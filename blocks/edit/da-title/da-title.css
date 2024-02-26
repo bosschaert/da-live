@@ -141,9 +141,6 @@ div.collab-other-users div {
 }
 
 img.collab-icon {
-  /* Trick to change the SVG color ro 1473E6
-  filter: invert(35%) sepia(96%) saturate(4714%) hue-rotate(204deg) brightness(100%) contrast(84%);
-  this is now done in the svg file itself */
   width: 19px;
   height: 19px;
 }

@@ -90,38 +90,10 @@ function setAEMDocInEditor(aemDoc, yXmlFragment, schema) {
   prosemirrorToYXmlFragment(fin, yXmlFragment);
 }
 
-function getAwarenessStatusDiv() {
-  const statusDiv = document.createElement('div');
-  statusDiv.classList = 'collab-awareness';
-  statusDiv.innerHTML = `<div class="collab-other-users">
-    <div><img class="collab-connection collab-icon"></div>
-    <div class="collab-users"></div>
-  </div>`;
-
-  const container = window.document.querySelector('da-title').shadowRoot.children[0]
-  container.insertBefore(statusDiv, container.children[1]);
-  return statusDiv;
-}
-
-export default function initProse({ editor, path }) {
-  const schema = getSchema();
-
-  const ydoc = new Y.Doc();
-
-  const server = COLLAB_ORIGIN;
-  const roomName = `${DA_ORIGIN}${new URL(path).pathname}`;
-
-  const opts = {};
-
-  if (window.adobeIMS?.isSignedInUser()) {
-    opts.params = { Authorization: `Bearer ${window.adobeIMS.getAccessToken().token}` };
-  }
-
-  const wsProvider = new WebsocketProvider(server, roomName, ydoc, opts);
-
+function handleAwarenessUpdates(wsProvider, statusDiv) {
   const users = new Set();
-  const statusDiv = getAwarenessStatusDiv();
   const usersDiv = statusDiv.querySelector('div.collab-users');
+
   wsProvider.awareness.on('update', (delta) => {
     for (const u of delta.added) {
       users.add(u);
@@ -138,13 +110,15 @@ export default function initProse({ editor, path }) {
         const initial = u.toString().substring(0, 1);
         html = html.concat(`<div class="collab-initial" title="${u}"><p>${initial}</p></div>`);
       } else {
-        html = html.concat(`<div class="collab-icon"><img src="/blocks/edit/prose/img/Smock_RealTimeCustomerProfile_18_N.svg" alt="Other active user" class="collab-icon" alt="${u}" title="${u}"/></div>`);
+        html = html.concat(`<div class="collab-icon">
+          <img src="/blocks/edit/prose/img/Smock_RealTimeCustomerProfile_18_N.svg"
+              alt="Other active user" class="collab-icon" alt="${u}" title="${u}"/></div>`);
       }
     }
     usersDiv.innerHTML = html;
   });
 
-  const connectionImg = statusDiv.querySelector('img.collab-connection')
+  const connectionImg = statusDiv.querySelector('img.collab-connection');
   wsProvider.on('status', (st) => {
     const proseEl = window.view.root.querySelector('.ProseMirror');
     const connected = st.status === 'connected';
@@ -165,6 +139,38 @@ export default function initProse({ editor, path }) {
     connectionImg.alt = st.status;
     connectionImg.title = st.status;
   });
+}
+
+function createAwarenessStatusWidget(wsProvider) {
+  const statusDiv = document.createElement('div');
+  statusDiv.classList = 'collab-awareness';
+  statusDiv.innerHTML = `<div class="collab-other-users">
+    <div><img class="collab-connection collab-icon"></div>
+    <div class="collab-users"></div>
+  </div>`;
+
+  const container = window.document.querySelector('da-title').shadowRoot.children[0];
+  container.insertBefore(statusDiv, container.children[1]);
+
+  handleAwarenessUpdates(wsProvider, statusDiv);
+}
+
+export default function initProse({ editor, path }) {
+  const schema = getSchema();
+
+  const ydoc = new Y.Doc();
+
+  const server = COLLAB_ORIGIN;
+  const roomName = `${DA_ORIGIN}${new URL(path).pathname}`;
+
+  const opts = {};
+
+  if (window.adobeIMS?.isSignedInUser()) {
+    opts.params = { Authorization: `Bearer ${window.adobeIMS.getAccessToken().token}` };
+  }
+
+  const wsProvider = new WebsocketProvider(server, roomName, ydoc, opts);
+  createAwarenessStatusWidget(wsProvider);
 
   const yXmlFragment = ydoc.getXmlFragment('prosemirror');
 
