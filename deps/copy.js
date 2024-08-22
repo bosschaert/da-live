@@ -26,6 +26,7 @@ const IMPORT_MAP = {
     'jspreadsheet-ce-css': '/node_modules/jspreadsheet-ce/dist/jspreadsheet.css',
     'jsuites': '/node_modules/jsuites/dist/jsuites.js',
     'jsuites-css': '/node_modules/jsuites/dist/jsuites.css',
+    '@da-tools/da-parser': '/node_modules/@da-tools/da-parser/lib/index.js',
   },
 };
 
