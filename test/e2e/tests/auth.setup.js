@@ -44,13 +44,12 @@ setup('Set up authentication', async ({ page }) => {
   if (pwd) {
     console.log('Password found as secret');
   }
-  await page.getByLabel('Email address').fill('bosschae+da-test@adobetest.com');
+  await page.getByLabel('Email address').fill('da-test@adobetest.com');
   await page.waitForTimeout(10000);
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await page.waitForTimeout(20000);
-  await page.screenshot({ path: 'screenshot.png' });
   await page.getByLabel('Password', { exact: true }).fill(process.env.TEST_PASSWORD);
-  console.log('*** Entered password');
+  console.log('Entered password');
   await page.getByLabel('Continue').click();
   await page.getByLabel('Foundation Internal').click();
   await expect(page.locator('a.nx-nav-brand')).toContainText('Document Authoring');
