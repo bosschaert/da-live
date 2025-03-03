@@ -49,6 +49,7 @@ setup('Set up authentication', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await page.waitForTimeout(20000);
   await page.getByLabel('Password', { exact: true }).fill(process.env.TEST_PASSWORD);
+  await page.waitForTimeout(20000);
   console.log('Entered password');
   await page.getByLabel('Continue').click();
   await page.getByLabel('Foundation Internal').click();
