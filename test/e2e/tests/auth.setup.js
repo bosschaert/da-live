@@ -32,7 +32,7 @@ It is assumed to be configured as follows, where the current est user is in IMS 
 
 // This is executed once to authenticate the user used during the tests.
 setup('Set up authentication', async ({ page }) => {
-  test.setTimeout(60000); // TODO
+  setup.setTimeout(60000); // TODO
   const url = 'https://da.live';
 
   await page.goto(url);
