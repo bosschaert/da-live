@@ -48,8 +48,7 @@ setup('Set up authentication', async ({ page }) => {
   await page.waitForTimeout(10000);
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await page.waitForTimeout(20000);
-  console.log('*** Page: ', page);
-  console.log('*** JSON Page: ', JSON.stringify(page));
+  await page.screenshot({ path: 'screenshot.png' });
   await page.getByLabel('Password', { exact: true }).fill(process.env.TEST_PASSWORD);
   console.log('*** Entered password');
   await page.getByLabel('Continue').click();
