@@ -32,6 +32,7 @@ It is assumed to be configured as follows, where the current est user is in IMS 
 
 // This is executed once to authenticate the user used during the tests.
 setup('Set up authentication', async ({ page }) => {
+  test.setTimeout(60000); // TODO
   const url = 'https://da.live';
 
   await page.goto(url);
@@ -40,13 +41,17 @@ setup('Set up authentication', async ({ page }) => {
   // The IMS sign in page needs a bit of time to load
   await page.waitForTimeout(1000);
   const pwd = process.env.TEST_PASSWORD;
-  if (pwd.startsWith('t') && pwd.endsWith('K')) {
-    console.log('Password is correct');
+  if (pwd) {
+    console.log('Password found as secret');
   }
   await page.getByLabel('Email address').fill('bosschae+da-test@adobetest.com');
-  await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await page.waitForTimeout(10000);
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await page.waitForTimeout(20000);
+  console.log('*** Page: ', page);
+  console.log('*** JSON Page: ', JSON.stringify(page));
   await page.getByLabel('Password', { exact: true }).fill(process.env.TEST_PASSWORD);
+  console.log('*** Entered password');
   await page.getByLabel('Continue').click();
   await page.getByLabel('Foundation Internal').click();
   await expect(page.locator('a.nx-nav-brand')).toContainText('Document Authoring');
