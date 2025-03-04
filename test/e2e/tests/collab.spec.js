@@ -24,9 +24,9 @@ test('Collab cursors in multiple editors', async ({ browser, page }, workerInfo)
   // Wait a little bit so that the collab awareness has caught up and knows that we are logged in as
   // 'DA Test User'
   // TODO this should not be necessary
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(5000);
   await page.reload();
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(10000);
 
   await expect(page.locator('div.ProseMirror')).toBeVisible();
   await page.locator('div.ProseMirror').fill('Entered by user 1');
