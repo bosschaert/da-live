@@ -32,7 +32,6 @@ It is assumed to be configured as follows, where the current est user is in IMS 
 
 // This is executed once to authenticate the user used during the tests.
 setup('Set up authentication', async ({ page }) => {
-  setup.setTimeout(60000); // TODO
   const url = 'https://da.live';
 
   await page.goto(url);
@@ -46,7 +45,7 @@ setup('Set up authentication', async ({ page }) => {
   }
   await page.getByLabel('Email address').fill('bosschae+da-test@adobetest.com');
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
-  await page.getByLabel('Password', { exact: true }).fill(process.env.TEST_PASSWORD);
+  await page.getByLabel('Password', { exact: true }).fill(pwd);
   console.log('Entered password');
   await page.getByLabel('Continue', { exact: true }).click();
   await page.getByLabel('Foundation Internal').click();

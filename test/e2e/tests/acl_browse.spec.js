@@ -47,7 +47,9 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
   await page.locator('button:text("Document")').click();
   await page.locator('input.da-actions-input').fill(pageName);
 
-  await page.locator('button:text("Create document")').click();
+  // Cannot just click the 'Create document' button because on Firefox that for some reason gets
+  // overlaid with the 'sign out button', so just press 'space' on it.
+  await page.locator('button:text("Create document")').press(' ');
   await expect(page.locator('div.ProseMirror')).toBeVisible();
   await page.locator('div.ProseMirror').fill('test writable doc');
   await page.waitForTimeout(3000);
