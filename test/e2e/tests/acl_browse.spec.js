@@ -94,6 +94,8 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
     await newPage.getByLabel('Go to organization').click();
     await newPage.getByRole('link', { name: 'acltest' }).click();
     await newPage.getByRole('link', { name: 'testdocs' }).click();
+    await newPage.getByRole('link', { name: 'subdir' }).click();
+    await newPage.getByRole('link', { name: 'subdir1' }).click();
     await newPage.getByRole('link', { name: pageName }).click();
 
     // const url = new URL(pageURL);
