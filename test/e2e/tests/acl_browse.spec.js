@@ -34,6 +34,28 @@ test('Read-only directory', async ({ page }) => {
   await expect(page.locator('button.delete-button').locator('visible=true')).toHaveCount(0);
 });
 
+// test.only('Go to sign in page', async ({ browser, page }, workerInfo) => {
+//   const browseURL = 'https://da.live';
+//   await page.goto(browseURL);
+
+//   await page.waitForTimeout(1000);
+// await page.getByPlaceholder('organization').fill('da-testautomation');
+// await page.getByLabel('Go to organization').click();
+// await page.getByRole('link', { name: 'acltest' }).click();
+// await page.getByRole('link', { name: 'testdocs' }).click();
+
+//   // await page.getByPlaceholder('organization').click();
+//   // await page.getByPlaceholder('organization').fill('da-testautomation');
+//   // await page.getByLabel('Go to organization').click();
+
+//   // await page.goto('https://da.live/#/da-testautomation/acltr');
+//   // await page.goto('https://da.live/#/da-testautomation/acltest');
+//   // await page.goto('https://da.live/#/da-testautomation/acltest/testdocs');
+//   // await page.goto('https://da.live/#/da-testautomation/acltest/testdocs/subdir');
+
+//   // await page.goto('https://da.live/#/da-testautomation/acltest/testdocs/subdir');
+// });
+
 test('Read-write directory', async ({ browser, page }, workerInfo) => {
   const browseURL = 'https://da.live/#/da-testautomation/acltest/testdocs/subdir/subdir1';
 
@@ -68,15 +90,20 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
 
     // Log in is done when we see the profile menu
     await expect(newPage.getByLabel('Open profile menu')).toBeVisible();
+    await page.getByPlaceholder('organization').fill('da-testautomation');
+    await page.getByLabel('Go to organization').click();
+    await page.getByRole('link', { name: 'acltest' }).click();
+    await page.getByRole('link', { name: 'testdocs' }).click();
+    await page.getByRole('link', { name: pageName }).click();
 
-    const url = new URL(pageURL);
-    const relativePage = url.href.replace(url.origin, '');
-    console.log('Navigating to', relativePage);
+    // const url = new URL(pageURL);
+    // const relativePage = url.href.replace(url.origin, '');
+    // console.log('Navigating to', relativePage);
 
     // Now go to the page again where we want to be
-    await newPage.goto(relativePage);
-    await newPage.waitForTimeout(5000);
-    await newPage.reload();
+    // await newPage.goto(relativePage);
+    // await newPage.waitForTimeout(5000);
+    // await newPage.reload();
   }
   await newPage.waitForTimeout(1000);
   await expect(newPage.locator('div.ProseMirror')).toContainText('test writable doc');
