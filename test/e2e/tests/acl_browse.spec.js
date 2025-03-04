@@ -90,11 +90,11 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
 
     // Log in is done when we see the profile menu
     await expect(newPage.getByLabel('Open profile menu')).toBeVisible();
-    await page.getByPlaceholder('organization').fill('da-testautomation');
-    await page.getByLabel('Go to organization').click();
-    await page.getByRole('link', { name: 'acltest' }).click();
-    await page.getByRole('link', { name: 'testdocs' }).click();
-    await page.getByRole('link', { name: pageName }).click();
+    await newPage.getByPlaceholder('organization').fill('da-testautomation');
+    await newPage.getByLabel('Go to organization').click();
+    await newPage.getByRole('link', { name: 'acltest' }).click();
+    await newPage.getByRole('link', { name: 'testdocs' }).click();
+    await newPage.getByRole('link', { name: pageName }).click();
 
     // const url = new URL(pageURL);
     // const relativePage = url.href.replace(url.origin, '');
