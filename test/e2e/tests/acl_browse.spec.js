@@ -68,8 +68,12 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
 
     // Log in is done when we see the profile menu
     await expect(newPage.getByLabel('Open profile menu')).toBeVisible();
+
+    const relativePage = pageURL.href.replace(pageURL.origin, '');
+    console.log('Navigating to', relativePage);
+
     // Now go to the page again where we want to be
-    await newPage.goto(pageURL);
+    await newPage.goto(relativePage);
     await newPage.waitForTimeout(5000);
     await newPage.reload();
     await newPage.waitForTimeout(1000);
