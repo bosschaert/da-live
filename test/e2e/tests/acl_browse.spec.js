@@ -76,7 +76,7 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
   await page.locator('div.ProseMirror').fill('test writable doc');
   await page.waitForTimeout(3000);
 
-  const newPage = await browser.newPage();
+  let newPage = await browser.newPage();
   await newPage.goto(pageURL);
   // The following assertion has an extended timeout as it might cycle through the login screen
   // before the document is visible. The login screen doesn't need any input though, it will just
@@ -96,16 +96,11 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
     await newPage.getByRole('link', { name: 'testdocs' }).click();
     await newPage.getByRole('link', { name: 'subdir' }).click();
     await newPage.getByRole('link', { name: 'subdir1' }).click();
+
+    const newTabPromise = newPage.waitForEvent('popup');
     await newPage.getByRole('link', { name: pageName }).click();
-
-    // const url = new URL(pageURL);
-    // const relativePage = url.href.replace(url.origin, '');
-    // console.log('Navigating to', relativePage);
-
-    // Now go to the page again where we want to be
-    // await newPage.goto(relativePage);
-    // await newPage.waitForTimeout(5000);
-    // await newPage.reload();
+    // Make the new tab the page we're interested in
+    newPage = await newTabPromise;
   }
   await newPage.waitForTimeout(1000);
   await expect(newPage.locator('div.ProseMirror')).toContainText('test writable doc');
