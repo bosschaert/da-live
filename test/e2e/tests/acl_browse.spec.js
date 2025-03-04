@@ -60,8 +60,12 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
   // before the document is visible. The login screen doesn't need any input though, it will just
   // continue with the existing login
   await newPage.waitForTimeout(1000);
-  await newPage.reload();
-  await newPage.waitForTimeout(8000);
+
+  const hasSignIn = await newPage.getByRole('button', { name: 'Sign in' }).isVisible();
+  if (hasSignIn) {
+    await newPage.getByRole('button', { name: 'Sign in' }).click();
+    await newPage.waitForTimeout(1000);
+  }
   await expect(newPage.locator('div.ProseMirror')).toContainText('test writable doc');
   newPage.close();
 
