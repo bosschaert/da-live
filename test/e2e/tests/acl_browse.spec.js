@@ -70,6 +70,9 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
     await expect(newPage.getByLabel('Open profile menu')).toBeVisible();
     // Now go to the page again where we want to be
     await newPage.goto(pageURL);
+    await newPage.waitForTimeout(5000);
+    await newPage.reload();
+    await newPage.waitForTimeout(1000);
   }
   await expect(newPage.locator('div.ProseMirror')).toContainText('test writable doc');
   newPage.close();
