@@ -59,7 +59,8 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
   // The following assertion has an extended timeout as it might cycle through the login screen
   // before the document is visible. The login screen doesn't need any input though, it will just
   // continue with the existing login
-  await expect(newPage.locator('div.ProseMirror')).toContainText('test writable doc', { timeout: 10000 });
+  await page.waitForTimeout(10000);
+  await expect(newPage.locator('div.ProseMirror')).toContainText('test writable doc');
   newPage.close();
 
   await page.goto(browseURL);

@@ -49,6 +49,7 @@ test('Collab cursors in multiple editors', async ({ browser, page }, workerInfo)
   await page2.keyboard.type('From user 2');
 
   // Check the little cloud icon for collaborators
+  await page.waitForTimeout(5000); // give it some time to appear
   await expect(page2.locator('div.collab-icon.collab-icon-user[data-popup-content="DA Test User"]')).toBeVisible();
 
   // Check the cursor for collaborator
