@@ -7,7 +7,7 @@ function getEnv() {
   if (!owner) {
     owner = 'adobe';
   }
-  return branch === 'local' ? 'http://localhost:3000' : `https://${branch}--da-live--${owner}.hlx.live`;
+  return branch === 'local' ? 'http://localhost:3000' : `https://${branch}--da-live--${owner}.aem.live`;
 }
 
 const ENV = (() => getEnv())();
