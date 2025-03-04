@@ -67,7 +67,7 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
     await newPage.waitForTimeout(1000);
 
     // Log in is done when we see the profile menu
-    await newPage.getByLabel('Open profile menu').toBeVisible();
+    await expect(newPage.getByLabel('Open profile menu')).toBeVisible();
     // Now go to the page again where we want to be
     await newPage.goto(pageURL);
   }
