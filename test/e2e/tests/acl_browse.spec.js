@@ -65,6 +65,11 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
   if (hasSignIn) {
     await newPage.getByRole('button', { name: 'Sign in' }).click();
     await newPage.waitForTimeout(1000);
+
+    // Log in is done when we see the profile menu
+    await newPage.getByLabel('Open profile menu').toBeVisible();
+    // Now go to the page again where we want to be
+    await newPage.goto(pageURL);
   }
   await expect(newPage.locator('div.ProseMirror')).toContainText('test writable doc');
   newPage.close();
