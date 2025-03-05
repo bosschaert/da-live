@@ -70,7 +70,8 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
   await newPage.waitForTimeout(10000);
 
   // In some cases the new window is not automatically logged, in. Log in now if needed
-  const hasSignIn = await newPage.getByRole('button', { name: 'Sign in' }).isVisible();
+  // const hasSignIn = await newPage.getByRole('button', { name: 'Sign in' }).isVisible();
+  const hasSignIn = false;
   if (hasSignIn) {
     await newPage.getByRole('button', { name: 'Sign in' }).click();
     await newPage.waitForTimeout(1000);
