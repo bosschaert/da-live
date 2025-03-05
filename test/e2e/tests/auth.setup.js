@@ -32,6 +32,9 @@ It is assumed to be configured as follows, where the current est user is in IMS 
 
 // This is executed once to authenticate the user used during the tests.
 setup('Set up authentication', async ({ page }) => {
+  // The ACL tests require authentication. After authentication the domain is _always_
+  // https://da.live, even if we started with something like somebranch--da-live--adobe.aem.live
+  // so the ACL tests all use da.live as the base URL.
   const url = 'https://da.live';
 
   await page.goto(url);

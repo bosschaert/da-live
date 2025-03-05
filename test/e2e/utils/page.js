@@ -32,6 +32,7 @@ function getTestURL(type, testIdentifier, workerInfo, dir = '/da-sites/da-status
  *
  * @param {string} testIdentifier - A identifier for the test
  * @param {object} workerInfo - workerInfo as passed in by Playwright
+ * @param {string} dir - The directory to use (optional)
  * @returns {string} The URL for the test page.
  */
 export function getTestPageURL(testIdentifier, workerInfo, dir) {
@@ -43,10 +44,11 @@ export function getTestPageURL(testIdentifier, workerInfo, dir) {
  *
  * @param {string} testIdentifier - A identifier for the test
  * @param {object} workerInfo - workerInfo as passed in by Playwright
+ * @param {string} dir - The directory to use (optional)
  * @returns {string} The URL for the test page.
  */
-export function getTestFolderURL(testIdentifier, workerInfo) {
-  return getTestURL('', testIdentifier, workerInfo);
+export function getTestFolderURL(testIdentifier, workerInfo, dir) {
+  return getTestURL('', testIdentifier, workerInfo, dir);
 }
 
 /**

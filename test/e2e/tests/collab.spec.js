@@ -13,22 +13,21 @@ import { test, expect } from '@playwright/test';
 import { getTestPageURL } from '../utils/page.js';
 
 test('Collab cursors in multiple editors', async ({ browser, page }, workerInfo) => {
-  test.setTimeout(60000);
-
   // Open 2 editors on the same page and edit in both of them. One editor is logged in,
   // the other isn't.
   // Ensure that the edits are visible to both and that the collab cursors are there
   // Also check that the cloud icon is visible for the collaborator
 
   const pageURL = getTestPageURL('collab', workerInfo);
+  // Since IMS auth always brings you back to https://da.live we use that as domain
+  // this means that this test is not exercising the current branch (if any)
+  const daPageURL = pageURL.replace(new URL(pageURL).origin, 'https://da.live');
 
-  await page.goto(pageURL);
-  await page.waitForTimeout(10000);
+  await page.goto(daPageURL);
   await expect(page.getByLabel('Open profile menu')).toBeVisible();
   // Wait a little bit so that the collab awareness has caught up and knows that we are logged in as
   // 'DA Test User'
-  // TODO this should not be necessary
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(1000);
   await page.reload();
 
   await expect(page.locator('div.ProseMirror')).toBeVisible();
@@ -41,7 +40,7 @@ test('Collab cursors in multiple editors', async ({ browser, page }, workerInfo)
   // Open a new browser page with an empty storage state. which means its not logged in and
   // will have an anonymous user
   const page2 = await browser.newPage({ storageState: {} });
-  await page2.goto(pageURL);
+  await page2.goto(daPageURL);
 
   await expect(page2.locator('div.ProseMirror')).toBeVisible();
   await expect(page2.locator('div.ProseMirror')).toContainText('Entered by user 1');

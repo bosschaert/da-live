@@ -9,8 +9,6 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import fs from 'fs';
-import path from 'path';
 import { test, expect } from '@playwright/test';
 import { getTestPageURL } from '../utils/page.js';
 
@@ -37,10 +35,13 @@ test('Read-only directory', async ({ page }) => {
 });
 
 test('Read-write directory', async ({ browser, page }, workerInfo) => {
-  const browseURL = 'https://da.live/#/da-testautomation/acltest/testdocs/subdir/subdir1';
-
   const pageURL = getTestPageURL('acl-browse-edt', workerInfo, '/da-testautomation/acltest/testdocs/subdir/subdir1');
   const pageName = pageURL.split('/').pop();
+
+  // Since IMS auth always brings you back to https://da.live we use that as domain
+  // this means that this test is not exercising the current branch (if any)
+  const daPageURL = pageURL.replace(new URL(pageURL).origin, 'https://da.live');
+  const browseURL = daPageURL.replace(`/${pageName}`, '').replace('/edit#/', '/#/');
 
   await page.goto(browseURL);
   const newButton = page.getByRole('button', { name: 'New' });
@@ -56,41 +57,12 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
   await page.locator('div.ProseMirror').fill('test writable doc');
   await page.waitForTimeout(3000);
 
-  // let newPage = await browser.newPage();
-  /* */
-  // const sessionStorage = await page.evaluate(() => window.sessionStorage);
-  const authFile = path.join(__dirname, '../.playwright/.auth/user.json');
-  const sessionStorage = JSON.parse(fs.readFileSync(authFile, 'utf-8'));
-  let newPage = await browser.newPage({ storageState: sessionStorage });
-  /* */
-  await newPage.goto(pageURL);
+  const newPage = await browser.newPage();
+  await newPage.goto(daPageURL);
   // The following assertion has an extended timeout as it might cycle through the login screen
   // before the document is visible. The login screen doesn't need any input though, it will just
   // continue with the existing login
-  await newPage.waitForTimeout(10000);
-
-  // In some cases the new window is not automatically logged, in. Log in now if needed
-  // const hasSignIn = await newPage.getByRole('button', { name: 'Sign in' }).isVisible();
-  const hasSignIn = false;
-  if (hasSignIn) {
-    await newPage.getByRole('button', { name: 'Sign in' }).click();
-    await newPage.waitForTimeout(1000);
-
-    // Log in is done when we see the profile menu
-    await expect(newPage.getByLabel('Open profile menu')).toBeVisible();
-    await newPage.getByPlaceholder('organization').fill('da-testautomation');
-    await newPage.getByLabel('Go to organization').click();
-    await newPage.getByRole('link', { name: 'acltest' }).click();
-    await newPage.getByRole('link', { name: 'testdocs' }).click();
-    await newPage.getByRole('link', { name: 'subdir' }).click();
-    await newPage.getByRole('link', { name: 'subdir1' }).click();
-
-    const newTabPromise = newPage.waitForEvent('popup');
-    await newPage.getByRole('link', { name: pageName }).click();
-    // Make the new tab the page we're interested in
-    newPage = await newTabPromise;
-  }
-  await newPage.waitForTimeout(1000);
+  await newPage.waitForTimeout(3000);
   await expect(newPage.locator('div.ProseMirror')).toContainText('test writable doc');
   newPage.close();
 
