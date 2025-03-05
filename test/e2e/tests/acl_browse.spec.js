@@ -110,3 +110,18 @@ test('Readonly directory with writeable document', async ({ page }) => {
   await expect(editor).toContainText('This is doc_writeable');
   await expect(editor).toHaveAttribute('contenteditable', 'true');
 });
+
+test('No access directory should not show anything', async ({ page }) => {
+  await page.goto('https://da.live/#/da-testautomation/acltest/testdocs/subdir');
+
+  // In this directory we should be able to see files
+  await expect(page.getByRole('button', { name: 'Name' })).toBeVisible();
+
+  // In this directory we should be able to see nothing
+  await page.goto('https://da.live/#/da-testautomation/acltest/testdocs');
+  // We need to reload the page explicitly because the only thing we changed
+  // was the anchor and that doesn't normally trigger a change
+  await page.reload();
+  await page.waitForTimeout(3000);
+  await expect(page.getByRole('button', { name: 'Name' })).not.toBeVisible();
+});
