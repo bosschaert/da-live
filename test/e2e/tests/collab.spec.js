@@ -21,12 +21,12 @@ test('Collab cursors in multiple editors', async ({ browser, page }, workerInfo)
   const pageURL = getTestPageURL('collab', workerInfo);
 
   await page.goto(pageURL);
+  await expect(page.getByLabel('Open profile menu')).toBeVisible();
   // Wait a little bit so that the collab awareness has caught up and knows that we are logged in as
   // 'DA Test User'
   // TODO this should not be necessary
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(2000);
   await page.reload();
-  await page.waitForTimeout(10000);
 
   await expect(page.locator('div.ProseMirror')).toBeVisible();
   await page.locator('div.ProseMirror').fill('Entered by user 1');
@@ -49,7 +49,7 @@ test('Collab cursors in multiple editors', async ({ browser, page }, workerInfo)
   await page2.keyboard.type('From user 2');
 
   // Check the little cloud icon for collaborators
-  await page.waitForTimeout(5000); // give it some time to appear
+  await page.waitForTimeout(2000); // give it some time to appear
   await expect(page2.locator('div.collab-icon.collab-icon-user[data-popup-content="DA Test User"]')).toBeVisible();
 
   // Check the cursor for collaborator
