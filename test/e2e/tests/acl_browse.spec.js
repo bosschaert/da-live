@@ -9,6 +9,8 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+import fs from 'fs';
+import path from 'path';
 import { test, expect } from '@playwright/test';
 import { getTestPageURL } from '../utils/page.js';
 
@@ -34,28 +36,6 @@ test('Read-only directory', async ({ page }) => {
   await expect(page.locator('button.delete-button').locator('visible=true')).toHaveCount(0);
 });
 
-// test.only('Go to sign in page', async ({ browser, page }, workerInfo) => {
-//   const browseURL = 'https://da.live';
-//   await page.goto(browseURL);
-
-//   await page.waitForTimeout(1000);
-// await page.getByPlaceholder('organization').fill('da-testautomation');
-// await page.getByLabel('Go to organization').click();
-// await page.getByRole('link', { name: 'acltest' }).click();
-// await page.getByRole('link', { name: 'testdocs' }).click();
-
-//   // await page.getByPlaceholder('organization').click();
-//   // await page.getByPlaceholder('organization').fill('da-testautomation');
-//   // await page.getByLabel('Go to organization').click();
-
-//   // await page.goto('https://da.live/#/da-testautomation/acltr');
-//   // await page.goto('https://da.live/#/da-testautomation/acltest');
-//   // await page.goto('https://da.live/#/da-testautomation/acltest/testdocs');
-//   // await page.goto('https://da.live/#/da-testautomation/acltest/testdocs/subdir');
-
-//   // await page.goto('https://da.live/#/da-testautomation/acltest/testdocs/subdir');
-// });
-
 test('Read-write directory', async ({ browser, page }, workerInfo) => {
   const browseURL = 'https://da.live/#/da-testautomation/acltest/testdocs/subdir/subdir1';
 
@@ -76,12 +56,18 @@ test('Read-write directory', async ({ browser, page }, workerInfo) => {
   await page.locator('div.ProseMirror').fill('test writable doc');
   await page.waitForTimeout(3000);
 
-  let newPage = await browser.newPage();
+  // let newPage = await browser.newPage();
+  /* */
+  // const sessionStorage = await page.evaluate(() => window.sessionStorage);
+  const authFile = path.join(__dirname, '../.playwright/.auth/user.json');
+  const sessionStorage = JSON.parse(fs.readFileSync(authFile, 'utf-8'));
+  let newPage = await browser.newPage({ storageState: sessionStorage });
+  /* */
   await newPage.goto(pageURL);
   // The following assertion has an extended timeout as it might cycle through the login screen
   // before the document is visible. The login screen doesn't need any input though, it will just
   // continue with the existing login
-  await newPage.waitForTimeout(1000);
+  await newPage.waitForTimeout(10000);
 
   // In some cases the new window is not automatically logged, in. Log in now if needed
   const hasSignIn = await newPage.getByRole('button', { name: 'Sign in' }).isVisible();
