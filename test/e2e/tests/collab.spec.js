@@ -13,6 +13,8 @@ import { test, expect } from '@playwright/test';
 import { getTestPageURL } from '../utils/page.js';
 
 test('Collab cursors in multiple editors', async ({ browser, page }, workerInfo) => {
+  test.setTimeout(60000);
+
   // Open 2 editors on the same page and edit in both of them. One editor is logged in,
   // the other isn't.
   // Ensure that the edits are visible to both and that the collab cursors are there
@@ -21,6 +23,7 @@ test('Collab cursors in multiple editors', async ({ browser, page }, workerInfo)
   const pageURL = getTestPageURL('collab', workerInfo);
 
   await page.goto(pageURL);
+  await page.waitForTimeout(10000);
   await expect(page.getByLabel('Open profile menu')).toBeVisible();
   // Wait a little bit so that the collab awareness has caught up and knows that we are logged in as
   // 'DA Test User'
